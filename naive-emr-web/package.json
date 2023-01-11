@@ -11,6 +11,8 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@tiptap/starter-kit": "^2.0.0-beta.209",
+    "@tiptap/vue-3": "^2.0.0-beta.209",
     "nanoid": "^4.0.0",
     "pinia": "^2.0.28",
     "tdesign-vue-next": "^1.0.2",
@@ -20,6 +22,15 @@
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
     "@types/node": "^18.11.12",
+    "@vicons/antd": "^0.12.0",
+    "@vicons/carbon": "^0.12.0",
+    "@vicons/fa": "^0.12.0",
+    "@vicons/fluent": "^0.12.0",
+    "@vicons/ionicons4": "^0.12.0",
+    "@vicons/ionicons5": "^0.12.0",
+    "@vicons/material": "^0.12.0",
+    "@vicons/tabler": "^0.12.0",
+    "@vicons/utils": "^0.1.4",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitejs/plugin-vue-jsx": "^3.0.0",
     "@vue/eslint-config-prettier": "^7.0.0",
@@ -29,6 +40,7 @@
     "eslint-plugin-vue": "^9.3.0",
     "npm-run-all": "^4.1.5",
     "prettier": "^2.7.1",
+    "sass": "^1.57.1",
     "typescript": "~4.7.4",
     "unplugin-auto-import": "^0.12.1",
     "unplugin-vue-components": "^0.22.12",
