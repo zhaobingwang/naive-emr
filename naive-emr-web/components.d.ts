@@ -21,6 +21,8 @@ declare module '@vue/runtime-core' {
     TheEditor: typeof import('./src/components/TheEditor.vue')['default']
     TheWelcome: typeof import('./src/components/TheWelcome.vue')['default']
     TSpace: typeof import('tdesign-vue-next')['Space']
+    TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
+    TTabs: typeof import('tdesign-vue-next')['Tabs']
     TTooltip: typeof import('tdesign-vue-next')['Tooltip']
     WelcomeItem: typeof import('./src/components/WelcomeItem.vue')['default']
   }

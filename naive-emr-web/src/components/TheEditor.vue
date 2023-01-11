@@ -1,41 +1,51 @@
 <template>
   <main>
     <div class="editor-header" v-if="editor">
-      <t-button
-        variant="text"
-        shape="square"
-        @click="editor.chain().focus().toggleBold().run()"
-        :disabled="!editor.can().chain().focus().toggleBold().run()"
-        :class="{ 'is-active': editor.isActive('bold') }"
-      >
-        <t-tooltip content="粗体">
-          <Icon size="24">
-            <bold />
-          </Icon>
-        </t-tooltip>
-      </t-button>
-      <t-button
-        variant="text"
-        shape="square"
-        @click="editor.chain().focus().toggleItalic().run()"
-        :disabled="!editor.can().chain().focus().toggleItalic().run()"
-        :class="{ 'is-active': editor.isActive('italic') }"
-      >
-        <Icon size="24">
-          <italic />
-        </Icon>
-      </t-button>
-      <t-button
-        variant="text"
-        shape="square"
-        @click="editor.chain().focus().toggleStrike().run()"
-        :disabled="!editor.can().chain().focus().toggleStrike().run()"
-        :class="{ 'is-active': editor.isActive('strike') }"
-      >
-        <Icon size="24">
-          <strikethrough />
-        </Icon>
-      </t-button>
+      <!-- <t-space direction="vertical"> -->
+      <t-tabs v-model="menuTabValue" theme="card">
+        <t-tab-panel value="file" label="文件">
+          <t-button variant="text">HOLD...</t-button>
+        </t-tab-panel>
+        <t-tab-panel value="edit" label="编辑">
+          <t-button
+            variant="text"
+            shape="square"
+            @click="editor.chain().focus().toggleBold().run()"
+            :disabled="!editor.can().chain().focus().toggleBold().run()"
+            :class="{ 'is-active': editor.isActive('bold') }"
+          >
+            <t-tooltip content="粗体">
+              <Icon size="24">
+                <bold />
+              </Icon>
+            </t-tooltip>
+          </t-button>
+          <t-button
+            variant="text"
+            shape="square"
+            @click="editor.chain().focus().toggleItalic().run()"
+            :disabled="!editor.can().chain().focus().toggleItalic().run()"
+            :class="{ 'is-active': editor.isActive('italic') }"
+          >
+            <Icon size="24">
+              <italic />
+            </Icon>
+          </t-button>
+          <t-button
+            variant="text"
+            shape="square"
+            @click="editor.chain().focus().toggleStrike().run()"
+            :disabled="!editor.can().chain().focus().toggleStrike().run()"
+            :class="{ 'is-active': editor.isActive('strike') }"
+          >
+            <Icon size="24">
+              <strikethrough />
+            </Icon>
+          </t-button>
+        </t-tab-panel>
+        <t-tab-panel value="help" label="帮助"> HOLD... </t-tab-panel>
+      </t-tabs>
+      <!-- </t-space> -->
     </div>
     <!-- <t-divider></t-divider> -->
     <div class="editor-body">
@@ -46,7 +56,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onBeforeUnmount } from 'vue';
+import { watch, onBeforeUnmount, ref } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import { Icon } from '@vicons/utils';
@@ -58,6 +68,8 @@ const props = defineProps({
     default: '',
   },
 });
+
+const menuTabValue = ref('edit');
 
 const editor = new Editor({
   content: props.modelValue,
@@ -89,17 +101,17 @@ watch(
 );
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 main {
-  border: 1px dashed #000;
-  border-radius: 8px;
+  // border: 1px dashed #000;
+  // border-radius: 8px;
 }
-.ProseMirror {
+::v-deep .ProseMirror {
   // background-color: #fff;
   // border: 1px solid rgb(105, 100, 100);
   min-height: calc(100vh - 90px);
 }
-.ProseMirror-focused {
+::v-deep .ProseMirror-focused {
   // border: 1px dashed #000;
   outline: none;
 }
@@ -108,15 +120,14 @@ main {
   // height: 30px;
   // background-color: #fff;
   // border: 1px solid #000;
-  padding-left: 20px;
-  padding-right: 20px;
-  border-bottom: 1px dashed #000;
+  // padding-left: 20px;
+  // padding-right: 20px;
+  // border-bottom: 1px dashed #000;
 }
 .editor-body {
-  padding-left: 30px;
-  padding-right: 30px;
+  padding: 10px 30px;
   overflow-y: auto;
-  height: calc(100vh - 70px);
+  height: calc(100vh - 150px);
 
   // ::-webkit-scrollbar {
   //   width: 6px;
@@ -134,6 +145,23 @@ main {
 }
 .editor-footer {
   border-top: 1px dashed #000;
+}
+
+::v-deep .t-tabs__nav--card {
+  background-color: #2b579a;
+  color: #fff;
+}
+
+::v-deep .t-tabs__nav--card:hover {
+  color: #fff;
+  background-color: #124078 !important;
+}
+
+::v-deep .t-tabs__nav--card.t-tabs__nav-item:not(:first-of-type) {
+  border-left: none;
+}
+::v-deep .t-tabs__nav--card.t-tabs__nav-item:last-of-type {
+  border-right: none;
 }
 
 ::-webkit-scrollbar {
