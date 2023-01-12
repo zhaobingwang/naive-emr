@@ -1,58 +1,63 @@
 <template>
-  <main>
-    <div class="editor-header" v-if="editor">
-      <!-- <t-space direction="vertical"> -->
-      <t-tabs v-model="menuTabValue" theme="card">
-        <t-tab-panel value="file" label="文件">
-          <t-button variant="text">HOLD...</t-button>
-        </t-tab-panel>
-        <t-tab-panel value="edit" label="编辑">
-          <t-button
-            variant="text"
-            shape="square"
-            @click="editor.chain().focus().toggleBold().run()"
-            :disabled="!editor.can().chain().focus().toggleBold().run()"
-            :class="{ 'is-active': editor.isActive('bold') }"
-          >
-            <t-tooltip content="粗体">
+  <t-layout class="editor-container">
+    <t-header style="height: 85px">
+      <div class="editor-header" v-if="editor">
+        <!-- <t-space direction="vertical"> -->
+        <t-tabs v-model="menuTabValue" theme="card">
+          <t-tab-panel value="file" label="文件">
+            <t-button variant="text">HOLD...</t-button>
+          </t-tab-panel>
+          <t-tab-panel value="edit" label="编辑">
+            <t-button
+              variant="text"
+              shape="square"
+              @click="editor.chain().focus().toggleBold().run()"
+              :disabled="!editor.can().chain().focus().toggleBold().run()"
+              :class="{ 'is-active': editor.isActive('bold') }"
+            >
+              <t-tooltip content="粗体">
+                <Icon size="24">
+                  <bold />
+                </Icon>
+              </t-tooltip>
+            </t-button>
+            <t-button
+              variant="text"
+              shape="square"
+              @click="editor.chain().focus().toggleItalic().run()"
+              :disabled="!editor.can().chain().focus().toggleItalic().run()"
+              :class="{ 'is-active': editor.isActive('italic') }"
+            >
               <Icon size="24">
-                <bold />
+                <italic />
               </Icon>
-            </t-tooltip>
-          </t-button>
-          <t-button
-            variant="text"
-            shape="square"
-            @click="editor.chain().focus().toggleItalic().run()"
-            :disabled="!editor.can().chain().focus().toggleItalic().run()"
-            :class="{ 'is-active': editor.isActive('italic') }"
-          >
-            <Icon size="24">
-              <italic />
-            </Icon>
-          </t-button>
-          <t-button
-            variant="text"
-            shape="square"
-            @click="editor.chain().focus().toggleStrike().run()"
-            :disabled="!editor.can().chain().focus().toggleStrike().run()"
-            :class="{ 'is-active': editor.isActive('strike') }"
-          >
-            <Icon size="24">
-              <strikethrough />
-            </Icon>
-          </t-button>
-        </t-tab-panel>
-        <t-tab-panel value="help" label="帮助"> HOLD... </t-tab-panel>
-      </t-tabs>
-      <!-- </t-space> -->
-    </div>
-    <!-- <t-divider></t-divider> -->
-    <div class="editor-body">
-      <editor-content :editor="editor" />
-    </div>
-    <div class="editor-footer">footer</div>
-  </main>
+            </t-button>
+            <t-button
+              variant="text"
+              shape="square"
+              @click="editor.chain().focus().toggleStrike().run()"
+              :disabled="!editor.can().chain().focus().toggleStrike().run()"
+              :class="{ 'is-active': editor.isActive('strike') }"
+            >
+              <Icon size="24">
+                <strikethrough />
+              </Icon>
+            </t-button>
+          </t-tab-panel>
+          <t-tab-panel value="help" label="帮助"> <t-button variant="text">HOLD...</t-button> </t-tab-panel>
+        </t-tabs>
+        <!-- </t-space> -->
+      </div>
+    </t-header>
+    <t-content class="editor-body">
+      <!-- <div class="editor-body"> -->
+      <editor-content :editor="editor" class="editor-content" />
+      <!-- </div> -->
+    </t-content>
+    <t-footer>
+      <div class="editor-footer">footer</div>
+    </t-footer>
+  </t-layout>
 </template>
 
 <script setup lang="ts">
@@ -101,79 +106,68 @@ watch(
 );
 </script>
 
-<style lang="scss" scoped>
-main {
-  // border: 1px dashed #000;
-  // border-radius: 8px;
-}
-::v-deep .ProseMirror {
-  // background-color: #fff;
-  // border: 1px solid rgb(105, 100, 100);
-  min-height: calc(100vh - 90px);
-}
-::v-deep .ProseMirror-focused {
-  // border: 1px dashed #000;
-  outline: none;
+<style lang="less" scoped>
+.editor-container {
+  height: 100vh;
+
+  .editor-header {
+    //
+  }
+
+  .editor-body {
+    padding: 10px 0px;
+    overflow-y: auto;
+    display: flex;
+    justify-content: center;
+
+    :deep(.ProseMirror) {
+      min-height: 100%;
+      background-color: #ffffff;
+      width: 850px;
+      padding: 30px 30px;
+    }
+    :deep(.ProseMirror-focused) {
+      outline: none;
+    }
+  }
+
+  .editor-footer {
+    height: 30px;
+    background-color: #f3f3f3;
+  }
 }
 
-.editor-header {
-  // height: 30px;
-  // background-color: #fff;
-  // border: 1px solid #000;
-  // padding-left: 20px;
-  // padding-right: 20px;
-  // border-bottom: 1px dashed #000;
-}
-.editor-body {
-  padding: 10px 30px;
-  overflow-y: auto;
-  height: calc(100vh - 150px);
-
-  // ::-webkit-scrollbar {
-  //   width: 6px;
-  // }
-
-  // ::-webkit-scrollbar-thumb {
-  //   border-radius: 10px;
-  //   background: rgba(0, 0, 0, 0.2);
-  // }
-
-  // ::-webkit-scrollbar-track {
-  //   border-radius: 0;
-  //   background: rgba(0, 0, 0, 0.1);
-  // }
-}
-.editor-footer {
-  border-top: 1px dashed #000;
+:deep(.t-layout__footer) {
+  padding: 10px 0 0 !important;
 }
 
-::v-deep .t-tabs__nav--card {
+:deep(.t-tabs__nav--card) {
   background-color: #2b579a;
   color: #fff;
 }
 
-::v-deep .t-tabs__nav--card:hover {
+:deep(.t-tabs__nav--card):hover {
   color: #fff;
   background-color: #124078 !important;
 }
 
-::v-deep .t-tabs__nav--card.t-tabs__nav-item:not(:first-of-type) {
+:deep(.t-tabs__nav--card.t-tabs__nav-item):not(:first-of-type) {
   border-left: none;
 }
-::v-deep .t-tabs__nav--card.t-tabs__nav-item:last-of-type {
+:deep(.t-tabs__nav--card.t-tabs__nav-item):last-of-type {
   border-right: none;
 }
 
 ::-webkit-scrollbar {
-  /*高宽分别对应横竖滚动条的尺寸*/
-  width: 8px;
-  height: 8px;
+  width: 18px;
+  // height: 18px;
 }
 ::-webkit-scrollbar-thumb {
-  border-radius: 10px !important;
+  border: 1px solid rgb(198, 193, 193);
+  border-radius: 5px !important;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2) !important;
   /* 颜色 */
-  /* background:#b6b6b6!important; */
+  background: #fff !important;
   /* 线性渐变背景 */
   // background-image: linear-gradient(
   //   45deg,
@@ -190,6 +184,6 @@ main {
 ::-webkit-scrollbar-track {
   border-radius: 10px !important;
   box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2) !important;
-  background: #ededed !important;
+  background: #f3f3f3 !important;
 }
 </style>
