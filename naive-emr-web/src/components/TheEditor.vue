@@ -5,7 +5,15 @@
         <!-- <t-space direction="vertical"> -->
         <t-tabs v-model="menuTabValue" theme="card">
           <t-tab-panel value="file" label="文件">
-            <t-button variant="text">HOLD...</t-button>
+            <t-button variant="text">
+              <t-button variant="text" shape="square" @click="save">
+                <t-tooltip content="保存">
+                  <Icon size="24">
+                    <bold />
+                  </Icon>
+                </t-tooltip>
+              </t-button>
+            </t-button>
           </t-tab-panel>
           <t-tab-panel value="edit" label="编辑">
             <t-button
@@ -66,6 +74,7 @@ import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import { Icon } from '@vicons/utils';
 import { Bold, Italic, Strikethrough } from '@vicons/tabler';
+import { createDocument, getDocument } from '@/api/Document';
 
 const props = defineProps({
   modelValue: {
@@ -104,6 +113,19 @@ watch(
     editor.commands.setContent(value, false);
   },
 );
+
+const save = () => {
+  const json = editor.getJSON();
+  console.log('json', json);
+  createDocument({
+    jsonContent: JSON.stringify(json),
+  });
+};
+
+getDocument('6992E2FB-A052-4F79-BCB9-716F1514B8E4').then((res) => {
+  console.log('xx', res);
+  editor.commands.setContent(JSON.parse(res.jsonContent));
+});
 </script>
 
 <style lang="less" scoped>

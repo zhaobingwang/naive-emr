@@ -45,4 +45,15 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
+  server: {
+    port: 5100,
+    host: '0.0.0.0',
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:5176/api',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+    },
+  },
 });
