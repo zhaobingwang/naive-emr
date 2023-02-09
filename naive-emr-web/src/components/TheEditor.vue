@@ -5,11 +5,21 @@
         <!-- <t-space direction="vertical"> -->
         <t-tabs v-model="menuTabValue" theme="card">
           <t-tab-panel value="file" label="文件">
-            <t-button variant="text">
-              <t-button variant="text" shape="square" @click="save">
-                <t-tooltip content="保存">
+            <t-button variant="text" shape="square">
+              <t-button variant="text" shape="square" @click="handleExport2Json">
+                <t-tooltip content="导出到本地">
                   <Icon size="24">
-                    <bold />
+                    <FileExport />
+                  </Icon>
+                </t-tooltip>
+              </t-button>
+            </t-button>
+
+            <t-button variant="text" shape="square">
+              <t-button variant="text" shape="square" @click="handleImportFromJson">
+                <t-tooltip content="从本地导入">
+                  <Icon size="24">
+                    <FileImport />
                   </Icon>
                 </t-tooltip>
               </t-button>
@@ -36,9 +46,11 @@
               :disabled="!editor.can().chain().focus().toggleItalic().run()"
               :class="{ 'is-active': editor.isActive('italic') }"
             >
-              <Icon size="24">
-                <italic />
-              </Icon>
+              <t-tooltip content="斜体">
+                <Icon size="24">
+                  <italic />
+                </Icon>
+              </t-tooltip>
             </t-button>
             <t-button
               variant="text"
@@ -47,9 +59,11 @@
               :disabled="!editor.can().chain().focus().toggleStrike().run()"
               :class="{ 'is-active': editor.isActive('strike') }"
             >
-              <Icon size="24">
-                <strikethrough />
-              </Icon>
+              <t-tooltip content="删除线">
+                <Icon size="24">
+                  <strikethrough />
+                </Icon>
+              </t-tooltip>
             </t-button>
           </t-tab-panel>
           <t-tab-panel value="help" label="帮助"> <t-button variant="text">HOLD...</t-button> </t-tab-panel>
@@ -73,8 +87,9 @@ import { watch, onBeforeUnmount, ref } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import StarterKit from '@tiptap/starter-kit';
 import { Icon } from '@vicons/utils';
-import { Bold, Italic, Strikethrough } from '@vicons/tabler';
+import { FileExport, FileImport, Bold, Italic, Strikethrough } from '@vicons/tabler';
 import { createDocument, getDocument } from '@/api/Document';
+import { export2Json, readAsStringFromJsonFile } from '@/utils/fileUtil';
 
 const props = defineProps({
   modelValue: {
@@ -114,18 +129,37 @@ watch(
   },
 );
 
-const save = () => {
-  const json = editor.getJSON();
-  console.log('json', json);
-  createDocument({
-    jsonContent: JSON.stringify(json),
-  });
+const handleExport2Json = () => {
+  const jsonObj = editor.getJSON();
+  console.log('json', jsonObj);
+  export2Json(JSON.stringify(jsonObj));
 };
 
-getDocument('6992E2FB-A052-4F79-BCB9-716F1514B8E4').then((res) => {
-  console.log('xx', res);
-  editor.commands.setContent(JSON.parse(res.jsonContent));
-});
+const handleImportFromJson = () => {
+  const input = document.createElement('input');
+  input.setAttribute('type', 'file');
+  input.setAttribute('accept', '.html');
+  input.onchange = function () {
+    readAsStringFromJsonFile(this, function (jsonStr: string) {
+      editor.commands.setContent(JSON.parse(jsonStr));
+    });
+  };
+
+  input.click();
+};
+
+// const save = () => {
+//   const json = editor.getJSON();
+//   console.log('json', json);
+//   createDocument({
+//     jsonContent: JSON.stringify(json),
+//   });
+// };
+
+// getDocument('6992E2FB-A052-4F79-BCB9-716F1514B8E4').then((res) => {
+//   console.log('xx', res);
+//   editor.commands.setContent(JSON.parse(res.jsonContent));
+// });
 </script>
 
 <style lang="less" scoped>
