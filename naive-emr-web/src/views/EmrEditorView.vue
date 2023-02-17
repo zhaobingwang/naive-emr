@@ -13,5 +13,5 @@
 import { ref } from 'vue';
 import Editor from '@/components/TheEditor.vue';
 
-const content = ref('<p>A Vue.js wrapper component for tiptap to use <code>v-model</code>.</p>');
+const content = ref('<p>这是一段测试内容</p>');
 </script>

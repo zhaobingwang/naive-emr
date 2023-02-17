@@ -1,75 +1,7 @@
 <template>
   <t-layout class="editor-container">
     <t-header style="height: 85px">
-      <div class="editor-header" v-if="editor">
-        <!-- <t-space direction="vertical"> -->
-        <t-tabs v-model="menuTabValue" theme="card">
-          <t-tab-panel value="file" label="文件">
-            <t-button variant="text" shape="square">
-              <t-button variant="text" shape="square" @click="handleExport2Json">
-                <t-tooltip content="导出到本地">
-                  <Icon size="24">
-                    <FileExport />
-                  </Icon>
-                </t-tooltip>
-              </t-button>
-            </t-button>
-
-            <t-button variant="text" shape="square">
-              <t-button variant="text" shape="square" @click="handleImportFromJson">
-                <t-tooltip content="从本地导入">
-                  <Icon size="24">
-                    <FileImport />
-                  </Icon>
-                </t-tooltip>
-              </t-button>
-            </t-button>
-          </t-tab-panel>
-          <t-tab-panel value="edit" label="编辑">
-            <t-button
-              variant="text"
-              shape="square"
-              @click="editor.chain().focus().toggleBold().run()"
-              :disabled="!editor.can().chain().focus().toggleBold().run()"
-              :class="{ 'is-active': editor.isActive('bold') }"
-            >
-              <t-tooltip content="粗体">
-                <Icon size="24">
-                  <bold />
-                </Icon>
-              </t-tooltip>
-            </t-button>
-            <t-button
-              variant="text"
-              shape="square"
-              @click="editor.chain().focus().toggleItalic().run()"
-              :disabled="!editor.can().chain().focus().toggleItalic().run()"
-              :class="{ 'is-active': editor.isActive('italic') }"
-            >
-              <t-tooltip content="斜体">
-                <Icon size="24">
-                  <italic />
-                </Icon>
-              </t-tooltip>
-            </t-button>
-            <t-button
-              variant="text"
-              shape="square"
-              @click="editor.chain().focus().toggleStrike().run()"
-              :disabled="!editor.can().chain().focus().toggleStrike().run()"
-              :class="{ 'is-active': editor.isActive('strike') }"
-            >
-              <t-tooltip content="删除线">
-                <Icon size="24">
-                  <strikethrough />
-                </Icon>
-              </t-tooltip>
-            </t-button>
-          </t-tab-panel>
-          <t-tab-panel value="help" label="帮助"> <t-button variant="text">HOLD...</t-button> </t-tab-panel>
-        </t-tabs>
-        <!-- </t-space> -->
-      </div>
+      <editor-header :editor="editor" />
     </t-header>
     <t-content class="editor-body">
       <!-- <div class="editor-body"> -->
@@ -85,11 +17,11 @@
 <script setup lang="ts">
 import { watch, onBeforeUnmount, ref } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
-import StarterKit from '@tiptap/starter-kit';
-import { Icon } from '@vicons/utils';
-import { FileExport, FileImport, Bold, Italic, Strikethrough } from '@vicons/tabler';
-import { createDocument, getDocument } from '@/api/Document';
-import { export2Json, readAsStringFromJsonFile } from '@/utils/fileUtil';
+import EditorHeader from '@/components/TheHeader.vue';
+// import StarterKit from '@tiptap/starter-kit';
+// import { createDocument, getDocument } from '@/api/Document';
+
+import { useTheEditor } from '@/composables/editor';
 
 const props = defineProps({
   modelValue: {
@@ -97,22 +29,9 @@ const props = defineProps({
     default: '',
   },
 });
-
-const menuTabValue = ref('edit');
-
-const editor = new Editor({
-  content: props.modelValue,
-  extensions: [StarterKit],
-  onUpdate: () => {
-    // HTML
-    emit('update:modelValue', editor.getHTML());
-
-    // JSON
-    // this.$emit('update:modelValue', this.editor.getJSON())
-  },
-});
-
 const emit = defineEmits(['update:modelValue']);
+
+const { editor } = useTheEditor(props, emit);
 
 onBeforeUnmount(() => {
   editor.destroy();
@@ -128,38 +47,6 @@ watch(
     editor.commands.setContent(value, false);
   },
 );
-
-const handleExport2Json = () => {
-  const jsonObj = editor.getJSON();
-  console.log('json', jsonObj);
-  export2Json(JSON.stringify(jsonObj));
-};
-
-const handleImportFromJson = () => {
-  const input = document.createElement('input');
-  input.setAttribute('type', 'file');
-  input.setAttribute('accept', '.html');
-  input.onchange = function () {
-    readAsStringFromJsonFile(this, function (jsonStr: string) {
-      editor.commands.setContent(JSON.parse(jsonStr));
-    });
-  };
-
-  input.click();
-};
-
-// const save = () => {
-//   const json = editor.getJSON();
-//   console.log('json', json);
-//   createDocument({
-//     jsonContent: JSON.stringify(json),
-//   });
-// };
-
-// getDocument('6992E2FB-A052-4F79-BCB9-716F1514B8E4').then((res) => {
-//   console.log('xx', res);
-//   editor.commands.setContent(JSON.parse(res.jsonContent));
-// });
 </script>
 
 <style lang="less" scoped>
