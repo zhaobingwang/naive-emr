@@ -118,6 +118,37 @@
             </Icon>
           </t-tooltip>
         </t-button>
+
+        <t-dropdown
+          trigger="click"
+          @click="handleFontsClick"
+          :class="{ 'is-active': isFontsActive() }"
+          maxColumnWidth="100"
+          maxHeight="300"
+        >
+          <t-button variant="text" shape="square">
+            <t-tooltip content="字体">
+              <Icon size="24">
+                <Font />
+              </Icon>
+            </t-tooltip>
+          </t-button>
+          <t-dropdown-menu>
+            <t-dropdown-item
+              v-for="item in fonts"
+              :key="item.value"
+              :class="{ 'is-active': isFontsActive(item.value) }"
+              divider="true"
+            >
+              {{ item.content }}
+              <!-- <t-tooltip :content="item.label">
+                <Icon size="24">
+                  <component :is="item.comp"></component>
+                </Icon>
+              </t-tooltip> -->
+            </t-dropdown-item>
+          </t-dropdown-menu>
+        </t-dropdown>
       </t-tab-panel>
       <t-tab-panel value="help" label="帮助"> <t-button variant="text">HOLD...</t-button> </t-tab-panel>
     </t-tabs>
@@ -132,6 +163,7 @@ import { export2Json, readAsStringFromJsonFile } from '@/utils/fileUtil';
 import { Icon } from '@vicons/utils';
 import { FileExport, FileImport, Bold, Italic, Strikethrough, Heading, H1, H2, H3, H4, H5, H6 } from '@vicons/tabler';
 import { OrderedListOutlined, UnorderedListOutlined } from '@vicons/antd';
+import { Font } from '@vicons/fa';
 
 const menuTabValue = ref('edit');
 
@@ -172,6 +204,13 @@ const headers = [
   { key: 'H6', comp: H6, value: 6, label: '六级标题' },
 ];
 
+const fonts = [
+  { content: '默认', value: '' },
+  { content: '阿里妈妈东方大楷', value: '阿里妈妈东方大楷' },
+  { content: '阿里巴巴普惠体Thin', value: '阿里巴巴普惠体Thin' },
+  { content: '阿里巴巴普惠体Light', value: '阿里巴巴普惠体Light' },
+];
+
 const isHeadingActive = (head?: number) => {
   if (head) {
     if (head <= 0) {
@@ -190,11 +229,36 @@ const isHeadingActive = (head?: number) => {
   }
 };
 
+const isFontsActive = (font?: string) => {
+  console.log('font', font, props.editor.isActive('textStyle', { fontFamily: '' }));
+
+  if (font) {
+    // :class="{ 'is-active': editor.isActive('textStyle', { fontFamily: 'Inter' }) }"
+    return props.editor.isActive('textStyle', { fontFamily: font });
+  } else {
+    return props.editor.isActive('textStyle', { fontFamily: '' });
+  }
+};
+
 const handleHeaderClick = (data: any) => {
   if (data.key <= 0) {
     props.editor.chain().focus().setParagraph().run();
   } else {
     props.editor.chain().focus().toggleHeading({ level: data.key }).run();
   }
+};
+
+const handleFontsClick = (data: any) => {
+  if (data.key) {
+    props.editor.chain().focus().setFontFamily(data.key).run();
+  } else {
+    props.editor.chain().focus().unsetFontFamily().run();
+  }
+  // if (data.key <= 0) {
+  //   // props.editor.chain().focus().setParagraph().run();
+  // } else {
+  //   // props.editor.chain().focus().toggleHeading({ level: data.key }).run();
+  //   props.editor.chain().focus().setFontFamily('阿里妈妈东方大楷').run();
+  // }
 };
 </script>

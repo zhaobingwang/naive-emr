@@ -1,4 +1,4 @@
-import service from '@/Axios';
+import service from '@/axios';
 
 // export interface EmrDocument {
 //   jsonContent: string;
