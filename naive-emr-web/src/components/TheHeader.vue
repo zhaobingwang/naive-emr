@@ -129,7 +129,7 @@
           <t-button variant="text" shape="square">
             <t-tooltip content="字体">
               <Icon size="24">
-                <Font />
+                <TextFont />
               </Icon>
             </t-tooltip>
           </t-button>
@@ -149,6 +149,21 @@
             </t-dropdown-item>
           </t-dropdown-menu>
         </t-dropdown>
+
+        <t-space>
+          <t-select
+            autoWidth
+            borderless
+            v-model="value1"
+            :options="options1"
+            placeholder="请选择字体"
+            @change="handleFontChange"
+          ></t-select>
+        </t-space>
+
+        <t-button variant="text" shape="square" @click="handleSetContent">
+          <t-tooltip content="生成一段测试内容"> 测试 </t-tooltip>
+        </t-button>
       </t-tab-panel>
       <t-tab-panel value="help" label="帮助"> <t-button variant="text">HOLD...</t-button> </t-tab-panel>
     </t-tabs>
@@ -163,7 +178,7 @@ import { export2Json, readAsStringFromJsonFile } from '@/utils/fileUtil';
 import { Icon } from '@vicons/utils';
 import { FileExport, FileImport, Bold, Italic, Strikethrough, Heading, H1, H2, H3, H4, H5, H6 } from '@vicons/tabler';
 import { OrderedListOutlined, UnorderedListOutlined } from '@vicons/antd';
-import { Font } from '@vicons/fa';
+import { TextFont } from '@vicons/carbon';
 
 const menuTabValue = ref('edit');
 
@@ -210,6 +225,14 @@ const fonts = [
   { content: '阿里巴巴普惠体Thin', value: '阿里巴巴普惠体Thin' },
   { content: '阿里巴巴普惠体Light', value: '阿里巴巴普惠体Light' },
 ];
+
+const options1 = [
+  { label: '默认', value: '默认', title: '默认' },
+  { label: '阿里妈妈东方大楷', value: '阿里妈妈东方大楷' },
+  { label: '阿里巴巴普惠体Thin', value: '阿里巴巴普惠体Thin' },
+  { label: '阿里巴巴普惠体Light', value: '阿里巴巴普惠体Light', disabled: true },
+];
+const value1 = ref('');
 
 const isHeadingActive = (head?: number) => {
   if (head) {
@@ -260,5 +283,14 @@ const handleFontsClick = (data: any) => {
   //   // props.editor.chain().focus().toggleHeading({ level: data.key }).run();
   //   props.editor.chain().focus().setFontFamily('阿里妈妈东方大楷').run();
   // }
+};
+
+const handleFontChange = (value: any) => {
+  console.log('handleFontChange', value);
+  if (value === '默认') {
+    props.editor.chain().focus().unsetFontFamily().run();
+  } else {
+    props.editor.chain().focus().setFontFamily(value).run();
+  }
 };
 </script>

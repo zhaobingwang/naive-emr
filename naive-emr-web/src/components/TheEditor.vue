@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { watch, onBeforeUnmount, ref } from 'vue';
+import { watch, onBeforeUnmount, onMounted, ref } from 'vue';
 import { Editor, EditorContent } from '@tiptap/vue-3';
 import EditorHeader from '@/components/TheHeader.vue';
 // import StarterKit from '@tiptap/starter-kit';
@@ -37,6 +37,10 @@ onBeforeUnmount(() => {
   editor.destroy();
 });
 
+onMounted(() => {
+  handleSetContent();
+});
+
 watch(
   () => props.modelValue,
   (value, oldValue) => {
@@ -47,6 +51,36 @@ watch(
     editor.commands.setContent(value, false);
   },
 );
+
+const handleSetContent = () => {
+  console.log('xxx');
+
+  editor.commands.setContent({
+    type: 'doc',
+    content: [
+      {
+        type: 'paragraph',
+        content: [
+          {
+            type: 'text',
+            text: '这是一段测试文本',
+          },
+        ],
+      },
+      {
+        type: 'paragraph',
+        content: [
+          {
+            type: 'Checkbox',
+            attrs: {
+              checked: ['选项一', '选项二', '选项三'],
+            },
+          },
+        ],
+      },
+    ],
+  });
+};
 </script>
 
 <style lang="less" scoped>
