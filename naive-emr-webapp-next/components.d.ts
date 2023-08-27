@@ -11,5 +11,14 @@ declare module 'vue' {
     NSpace: typeof import('naive-ui')['NSpace']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TAffix: typeof import('tdesign-vue-next')['Affix']
+    TAside: typeof import('tdesign-vue-next')['Aside']
+    TButton: typeof import('tdesign-vue-next')['Button']
+    TContent: typeof import('tdesign-vue-next')['Content']
+    TFooter: typeof import('tdesign-vue-next')['Footer']
+    THeader: typeof import('tdesign-vue-next')['Header']
+    TLayout: typeof import('tdesign-vue-next')['Layout']
+    TSapce: typeof import('tdesign-vue-next')['Sapce']
+    TSpace: typeof import('tdesign-vue-next')['Space']
   }
 }

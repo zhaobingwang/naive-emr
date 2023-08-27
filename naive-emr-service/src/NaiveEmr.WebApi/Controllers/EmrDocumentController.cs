@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using NaiveEmr.ApplicationCore.Entities;
 using NaiveEmr.ApplicationCore.Interfaces;
 using NaiveEmr.WebApi.Dto;
+using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Unicode;
 
 namespace NaiveEmr.WebApi.Controllers
 {
@@ -28,19 +30,31 @@ namespace NaiveEmr.WebApi.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync([FromBody] CreateDocumentDto emrDocumentDto)
+        public async Task<IActionResult> PostAsync([FromBody] Data main)
         {
             EmrDocument emrDocument = new EmrDocument();
+            JsonSerializerOptions jsonSerializerOptions = new JsonSerializerOptions()
+            {
+                Encoder = JavaScriptEncoder.Create(UnicodeRanges.All)
+            };
             var now = DateTime.Now;
             emrDocument.Id = Guid.NewGuid();
             emrDocument.Title = now.ToString();
             emrDocument.CreateTime = now;
             emrDocument.UpdateTime = now;
-            emrDocument.JsonContent = emrDocumentDto.JsonContent;
+            emrDocument.JsonContent = JsonSerializer.Serialize(main,jsonSerializerOptions);
 
-            _logger.LogInformation(JsonSerializer.Serialize(emrDocument));
+ 
+            _logger.LogInformation(JsonSerializer.Serialize(emrDocument, jsonSerializerOptions));
             var created = await _documentService.AddAsync(emrDocument);
             return Ok(created);
         }
+    }
+
+    public class Data
+    {
+        public List<Object> header { get; set; }
+        public List<Object> main { get; set; }
+        public List<Object> footer { get; set; }
     }
 }
